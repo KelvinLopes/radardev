@@ -46,7 +46,10 @@ module.exports = {
         location,
       });
 
-      // Filter connections max are distance 10 km with one techs filtereds
+      /* Filtra os devs com um raio de 10km da localização
+       * de origem e com pelo menos uma tech que tem
+       * cadastrado no devRadar
+       */
 
       const sendSocketMessageTo = findConnections(
         { latitude, longitude },
