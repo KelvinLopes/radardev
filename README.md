@@ -24,6 +24,8 @@ conhecimentos se torna mais prático.
 
 ## Techs 🚙🔌🤝
 
+*NodeJS
+
 * Mongoose,
 
 * ESLint,
