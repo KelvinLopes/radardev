@@ -60,10 +60,10 @@ module.exports = {
     return res.json(dev);
   },
 
-  async update(req, res) {
+  // Criar um novo metodo de atualização
+  /* async update(req, res) {
     const { _id } = req.params;
     const { techs, latitude, longitude } = req.body;
-
     const techsArray = parseStringAsArray(techs);
 
     const location = {
@@ -105,6 +105,7 @@ module.exports = {
       longitude,
     });
   },
+  */
 
   async delete(req, res) {
     const { _id } = req.params;
