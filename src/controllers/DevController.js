@@ -13,8 +13,57 @@ module.exports = {
 
     return res.json(devs);
   },
-
+  
   async store(req, res) {
+    
+  const dev =
+  Dev.query(dev, [req.body.github_username, req.body.techs,req.body.latitude, req.body.techs,req.body.longitude  ], function(err, results) {
+    
+    let dev = await Dev.findOne({ req.body.github_username });
+
+    if (dev) {
+      res.status(400).json({ message: 'User already exists!' });
+    }
+
+    if (!dev) {
+      const apiResponse = await axios.get(
+        `https://api.github.com/users/${github_username}`
+      );
+
+      const { name, avatar_url, bio } = apiResponse.data;
+
+      const techsArray = parseStringAsArray(techs);
+
+      const location = {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      };
+
+      dev = await Dev.create({
+        github_username,
+        name,
+        avatar_url,
+        bio,
+        techs: techsArray,
+        location,
+      });
+
+      /* Filtra os devs com um raio de 10km da localização
+       * de origem e com pelo menos uma tech que tem
+       * cadastrado no devRadar
+       */
+
+      const sendSocketMessageTo = findConnections(
+        { latitude, longitude },
+        techsArray
+      );
+      sendMessage(sendSocketMessageTo, 'new-dev', dev);
+    }
+    return res.json(dev);
+  },
+
+  });
+});
     const { github_username, techs, latitude, longitude } = req.body;
 
     let dev = await Dev.findOne({ github_username });
@@ -59,6 +108,53 @@ module.exports = {
     }
     return res.json(dev);
   },
+    
+
+  /*async store(req, res) {
+    const { github_username, techs, latitude, longitude } = req.body;
+
+    let dev = await Dev.findOne({ github_username });
+
+    if (dev) {
+      res.status(400).json({ message: 'User already exists!' });
+    }
+
+    if (!dev) {
+      const apiResponse = await axios.get(
+        `https://api.github.com/users/${github_username}`
+      );
+
+      const { name, avatar_url, bio } = apiResponse.data;
+
+      const techsArray = parseStringAsArray(techs);
+
+      const location = {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      };
+
+      dev = await Dev.create({
+        github_username,
+        name,
+        avatar_url,
+        bio,
+        techs: techsArray,
+        location,
+      });
+
+      /* Filtra os devs com um raio de 10km da localização
+       * de origem e com pelo menos uma tech que tem
+       * cadastrado no devRadar
+       */
+
+      const sendSocketMessageTo = findConnections(
+        { latitude, longitude },
+        techsArray
+      );
+      sendMessage(sendSocketMessageTo, 'new-dev', dev);
+    }
+    return res.json(dev);
+  },*/
 
   // Criar um novo metodo de atualização
   /* async update(req, res) {
